@@ -63,11 +63,11 @@ Build Snake-AI-agent from the source and install dependencies:
 3. **Install dependencies**:
 ```pip install -r requirements.txt```
 
-4. **Create virtual environment**:
-```conda env create -f conda.yml```
-
 ### Usage
 
-To run the project
+To run the project, you can simply run the ```main.py``` file
+
+
+
 
 
