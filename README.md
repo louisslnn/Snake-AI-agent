@@ -19,7 +19,7 @@ Built with the tools and technologies:
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Usage](#usage)
-  - [Testing](#testing)
+  - [Demo] (#demo)
 
 ---
 
@@ -65,7 +65,18 @@ Build Snake-AI-agent from the source and install dependencies:
 
 ### Usage
 
-To run the project, you can simply run the ```main.py``` file
+To run the project, you can simply run the ```main.py``` file by either
+
+- Click in your code editor on the "Run" button
+- Or hit this command in a terminal: ```python main.py``` (Windows) or ```python3 main.py``` (Mac, Linux) 
+
+### Demo
+
+To see the results, you can choose by either running the project by yourself, or by taking a look at the pictures in the ```demo``` folder.
+
+### Future improvements
+
+Implement a self-fine-tuning module that will allow us to determine the best parameter, to get the highest possible score.
 
 
 

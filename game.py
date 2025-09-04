@@ -26,6 +26,10 @@ BLOCK_SIZE = 20
 SPEED = 100
 
 class SnakeGameAI:
+    """
+    This class showcases all necessary functions and instantiates relevant variables to build foundations for the RL snake agent,
+    it provides helper functions to reset or initialize variables but also checkers to see whether a game is over.
+    """
     
     def __init__(self, w=640, h=480):
         self.w = w
@@ -37,6 +41,10 @@ class SnakeGameAI:
         self._reset()
 
     def _reset(self):
+        """
+        This function resets all variable that are game-dependent, it is called in the train function (see agent.py)
+        whenever is_collision function returns True
+        """
         # init game state
         self.direction = Direction.RIGHT
         
@@ -51,13 +59,20 @@ class SnakeGameAI:
         self.frame_iteration = 0
         
     def _place_food(self):
+        """
+        This function places a food at random on the pygame window
+        """
         x = random.randint(0, (self.w-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
         y = random.randint(0, (self.h-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
         self.food = Point(x, y)
         if self.food in self.snake:
             self._place_food()
         
-    def play_step(self, action):
+    def play_step(self, action: np.array):
+        """
+        This function performs a specific action passed as parameter and returns the reward, a game_over boolean and a score
+        for this action
+        """
         self.frame_iteration += 1
         # 1. collect user input
         for event in pygame.event.get():
@@ -92,6 +107,9 @@ class SnakeGameAI:
         return reward, game_over, self.score
     
     def is_collision(self, pt=None):
+        """
+        This function checks if the snake hits a boundary, or itself and returns True in that case, False otherwise
+        """
         if pt is None:
             pt = self.head
         # hits boundary
@@ -104,6 +122,9 @@ class SnakeGameAI:
         return False
         
     def _update_ui(self):
+        """
+        This function updates UI for each move made
+        """
         self.display.fill(BLACK)
         
         for pt in self.snake:
@@ -116,7 +137,11 @@ class SnakeGameAI:
         self.display.blit(text, [0, 0])
         pygame.display.flip()
         
-    def _move(self, action):
+    def _move(self, action: np.array):
+        """
+        This function moves the snake, given a specific action (a binary array of integers, of length 3) representing
+        the directions to follow
+        """
         #[straight, right turn, left turn]
 
         clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]

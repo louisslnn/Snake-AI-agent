@@ -2,20 +2,21 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+import numpy as np
 import os
 
 class Linear_QNet(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, input_size: int, hidden_size: int, output_size: int):
         super().__init__()
         self.layer1 = nn.Linear(input_size, hidden_size)
         self.layer2 = nn.Linear(hidden_size, output_size)
     
-    def forward(self, x):
+    def forward(self, x: np.array):
         x = F.relu(self.layer1(x))
         x = self.layer2(x)
         return x
     
-    def save(self, file_name='model.pth'):
+    def save(self, file_name: str = 'model.pth'):
         model_folder_path = './model'
         if not os.path.exists(model_folder_path):
             os.makedirs(model_folder_path)
@@ -24,19 +25,19 @@ class Linear_QNet(nn.Module):
         torch.save(self.state_dict(), file_name)
 
 class QTrainer:
-    def __init__(self, model, learning_rate, gamma):
+    def __init__(self, model: Linear_QNet, learning_rate: float, gamma: float):
         self.model = model
         self.learning_rate = learning_rate
         self.gamma = gamma
         self.optimizer = optim.Adam(model.parameters(), lr=learning_rate)
         self.criterion = nn.MSELoss()
     
-    def train_step(self, state, action, reward, next_state, done):
+    def train_step(self, state: np.array, action: np.array, reward: int, next_state, done: np.array):
+        # (n, x)
         state = torch.tensor(state, dtype=torch.float)
         next_state = torch.tensor(next_state, dtype=torch.float)
         action = torch.tensor(action, dtype=torch.long)
         reward = torch.tensor(reward, dtype=torch.float)
-        # (n, x)
 
         if len(state.shape) == 1:
             # (1, x)
@@ -46,7 +47,7 @@ class QTrainer:
             reward = torch.unsqueeze(reward, 0)
             done = (done, )
         
-        # 1: predicted Q values with current state
+        # predicted Q values with current state
         pred = self.model(state)
         target = pred.clone()
 
@@ -58,9 +59,6 @@ class QTrainer:
             action_idx = torch.argmax(action[idx]).item()
             target[idx][action_idx] = Q_new
 
-        # 2: Q_new = r + gamma * max(next_predicted Q value) -> only if not done
-        # pred.clone()
-        # preds[argmax(action)] = Q_new
         self.optimizer.zero_grad()
         loss = self.criterion(target, pred)
         loss.backward()

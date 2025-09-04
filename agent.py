@@ -19,7 +19,7 @@ class Agent:
         self.model = Linear_QNet(input_size=11, hidden_size=256, output_size=3)
         self.trainer = QTrainer(self.model, learning_rate=LR, gamma=self.gamma)
 
-    def get_state(self, game):
+    def get_state(self, game: SnakeGameAI) -> np.array:
         head = game.snake[0]
         point_l = Point(head.x - 20, head.y)
         point_r = Point(head.x + 20, head.y)
@@ -66,10 +66,10 @@ class Agent:
         
         return np.array(state, dtype=int)
 
-    def remember(self, state, action, reward, next_state, done):
+    def remember(self, state, action, reward: int, next_state, done):
         self.memory.append((state, action, reward, next_state, done)) # popleft() if MAX_MEMORY reached
 
-    def train_long_memory(self):
+    def train_long_memory(self) -> None:
         if len(self.memory) > BATCH_SIZE:
             mini_sample = random.sample(self.memory, BATCH_SIZE)
         else:
@@ -80,15 +80,14 @@ class Agent:
         # for state, action, reward, next_state, done in mini_sample:
         #     self.trainer.trainer_step(state, action, reward, next_state, done)
 
-    def train_short_memory(self, state, action, reward, next_state, done):
+    def train_short_memory(self, state, action: np.array, reward: int, next_state, done):
         self.trainer.train_step(state, action, reward, next_state, done)
 
-    def get_action(self, state):
+    def get_action(self, state) -> np.array:
         """
         This function sends back random moves, becoming less and less random as much as we play games
         If the first "if" condition isn't met, we predict the move using the DL model
         """
-        # random moves: tradeoff exploration / exploitation
         self.epsilon = 80 - self.number_of_games
         final_move = [0, 0, 0]
         if random.randint(0, 200) < self.epsilon:
@@ -134,9 +133,7 @@ def train():
 
             if score > record:
                 record = score
-                # agent.model.save()
-        
-            print('Game', agent.number_of_games, 'Score', score, 'Record:', record)
+                agent.model.save()
 
             plot_scores.append(score)
             total_scores += score
