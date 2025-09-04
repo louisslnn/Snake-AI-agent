@@ -19,7 +19,8 @@ Built with the tools and technologies:
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Usage](#usage)
-  - [Demo] (#demo)
+  - [Demo](#demo)
+  - [Future improvements](#future-improvements)
 
 ---
 
